@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    stages {
+        stage('xyz') {
+            steps {
+                    withAWS(roleAccount:'accountid', role:'arn:aws:iam::accountid:role/xyz-in-aws-role') {
+                sh '''
+                  aws ssm send-command \
+                  --document-name AWS-RunShellScript \
+                  --region eu-west-1 \
+                  --instance-ids i-123456 \
+                  --parameters '{"commands":["su - username;cd //"," ","su -c ./"]}'
+                  '''
+                    }
+            }
+        }
+
+
+      stage(' ') {
+      agent { dockerfile true }
+            steps {
+                sh 'sh /'
+                
+            }
+      }
+
+
+      stage('Stop PAT ASC App Instance') {
+            steps {
+                withAWS(roleAccount:'accountid', role:'arn:aws:iam::accountid:role/xyz-role') {
+                sh """ 
+                aws ec2 stop-instances --region eu-west-1 --instance-ids 'i-12345'
+                """
+                    }
+            } 
+        }
+
+      stage('Stop PAT ASC DB Instance') {
+            steps {
+                withAWS(roleAccount:'471297434123', role:'arn:aws:iam::471297434123:role/xyz-role') {
+                sh """
+                aws ec2 stop-instances --region eu-west-1 --instance-ids 'i-1234'
+                """
+                    }
+            }
+      }
+        
+}
+}
