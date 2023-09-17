@@ -25,7 +25,7 @@ pipeline {
       }
 
 
-      stage('Stop PAT ASC App Instance') {
+      stage('Stop Instance') {
             steps {
                 withAWS(roleAccount:'accountid', role:'arn:aws:iam::accountid:role/xyz-role') {
                 sh """ 
@@ -35,15 +35,6 @@ pipeline {
             } 
         }
 
-      stage('Stop PAT ASC DB Instance') {
-            steps {
-                withAWS(roleAccount:'account.id', role:'arn:aws:iam::471297434123:role/xyz-role') {
-                sh """
-                aws ec2 stop-instances --region eu-west-1 --instance-ids 'i-1234'
-                """
-                    }
-            }
-      }
-        
-}
-}
+   
+
+\
